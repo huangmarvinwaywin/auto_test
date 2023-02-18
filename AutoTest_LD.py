@@ -358,5 +358,3 @@ nGameCnt = 0
 if __name__ == "__main__":
     main()
 
-#test for git
-#how to add 
