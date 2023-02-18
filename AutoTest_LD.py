@@ -248,7 +248,6 @@ def checkGameExits(GameName):
     return
 
 def main():
-    ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
 
     sheet.cell(1,1).value = "Game"
     sheet.cell(1,2).value = "Detail Info"
@@ -351,10 +350,13 @@ def main():
     nGameCnt = nGameCnt + 1
     checkGameExits('6017')
 
+
+ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
 wb = openpyxl.load_workbook('D:/GoogleDrive/RegressionTest/RT_DeskCheck.xlsx')
 localtime = time.localtime()
 sheet = wb.create_sheet(str(time.strftime("LD_%y%m%d-%H-%M", localtime)),0)
 nGameCnt = 0
+
 if __name__ == "__main__":
     main()
 
