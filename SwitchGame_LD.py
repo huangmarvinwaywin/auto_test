@@ -13,10 +13,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def checkExits(PicName,bClickIconFound = False, Times = 15, findGameIcon = False):
+def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False):
     nCheckTimes = 0
     iconAppCheck = False
-    PicNamePath = 'D:/Selenium/auto_test/PicForCompare/' + PicName + '.png'
+    PicNamePath = 'D:/Selenium/auto_test/SwitchGameInfo/' + PicName + '.png'
     imgIcon = cv2.imread(PicNamePath)
     print(PicNamePath)
     iconW = imgIcon.shape[1]
@@ -59,8 +59,8 @@ def checkExits(PicName,bClickIconFound = False, Times = 15, findGameIcon = False
         print(PicName + ' Similarity = ', base_test)
         if base_test > 0.9:
             print('Found ' + PicName)
-            pyautogui.moveTo(top_left[0] + iconW/2,top_left[1] + iconH/2,0.5)
             if bClickIconFound == True:
+                pyautogui.moveTo(top_left[0] + iconW/2,top_left[1] + iconH/2,0.5)
                 pyautogui.click()
             iconAppCheck = True
         else:
@@ -77,6 +77,14 @@ def checkExits(PicName,bClickIconFound = False, Times = 15, findGameIcon = False
                 print('compare over times ' + PicName)
                 return False
     return True
+
+def checkGameInfo(GameName):
+    #檢查是否到遊戲館大廳
+    if checkExits('CheckInDesk',False) == False:
+        print('CheckInDesk Fail')
+
+
+    return True
     
 def main():
 
@@ -90,27 +98,27 @@ def main():
         return
 
     #檢查試玩按鈕是否存在
-    if checkExits('TrialPlay', 30) == False:
+    if checkExits('TrialPlay',True,30) == False:
         print('TrialPlay Fail')
         return
 
-    #這次版本沒有廣告
     #檢查廣告關閉按鈕是否存在
     if checkExits('AdClose') == False:
         print('AdClose Fail')
         return
 
-    #這次版本沒有廣告
     #檢查公告關閉按鈕是否存在
-    if checkExits('Announce') == False:
-        print('Announce Fail')
-        return
+    #if checkExits('Announce') == False:
+    #    print('Announce Fail')
+    #    return
 
     #檢查電子館大廳按鈕是否存在
     if checkExits('GoInToGameLobby') == False:
         print('GoInToGameLobby Fail')
         return
 
+    nGameCnt = 0
+    checkGameInfo('6001')
 
 
     return

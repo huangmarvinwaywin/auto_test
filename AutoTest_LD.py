@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 import pytesseract
 
 
-def checkExits(PicName, Times = 15, findGameIcon = False):
+def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False):
     nCheckTimes = 0
     iconAppCheck = False
     PicNamePath = 'D:/Selenium/auto_test/PicForCompare/' + PicName + '.png'
@@ -60,8 +60,9 @@ def checkExits(PicName, Times = 15, findGameIcon = False):
         print(PicName + ' Similarity = ', base_test)
         if base_test > 0.9:
             print('Found ' + PicName)
-            pyautogui.moveTo(top_left[0] + iconW/2,top_left[1] + iconH/2,0.5)
-            pyautogui.click()
+            if bClickIconFound == True:
+                pyautogui.moveTo(top_left[0] + iconW/2,top_left[1] + iconH/2,0.5)
+                pyautogui.click()
             iconAppCheck = True
         else:
             if findGameIcon == True:
@@ -200,13 +201,11 @@ def checkDeskExits():
 
 def checkGameExits(GameName):
     #檢查是否到遊戲館大廳
-    if checkExits('Trial_MenuMore') == False:
+    if checkExits('Trial_MenuMore',False) == False:
         print('Trial_MenuMore Fail')
-    #關閉選單
-    pyautogui.click()
     
     #檢查 game Icon是否存在
-    if checkExits(GameName,20,True) == False:
+    if checkExits(GameName,True,20,True) == False:
         print(GameName + ' check Fail')
 
     #檢查進入遊戲按鈕是否存在
@@ -284,7 +283,7 @@ def main():
         return
 
     #檢查試玩按鈕是否存在
-    if checkExits('TrialPlay', 30) == False:
+    if checkExits('TrialPlay',True,30) == False:
         print('TrialPlay Fail')
         return
 
