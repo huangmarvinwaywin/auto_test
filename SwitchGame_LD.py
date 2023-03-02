@@ -80,8 +80,62 @@ def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False)
 
 def checkGameInfo(GameName):
     #檢查是否到遊戲館大廳
-    if checkExits('CheckInDesk',False) == False:
-        print('CheckInDesk Fail')
+    if checkExits('Trial_MenuMore',False) == False:
+        print('Trial_MenuMore Fail')
+
+    #檢查 game Icon是否存在
+    if checkExits(GameName,True,20,True) == False:
+        print(GameName + ' check Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('InfoBook') == False:
+        print('InfoBook Fail')
+
+    #檢查說明頁面是否正確
+    InfoGameName = GameName + '_Info'
+    if checkExits(InfoGameName,False) == False:
+        print(InfoGameName + ' Fail')
+
+    #檢查進入關閉說明按鈕是否存在
+    if checkExits('Info_Close') == False:
+        print('Info_Close Fail')
+
+    #檢查進入遊戲按鈕是否存在
+    if checkExits('IntoDesk') == False:
+        print('IntoDesk Fail')
+
+    #檢查進入開啟選單按鈕是否存在
+    if checkExits('MenuForOpenInfo') == False:
+        print('MenuForOpenInfo Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('InfoInDesk') == False:
+        print('InfoInDesk Fail')
+
+    #檢查說明頁面是否正確
+    if checkExits(InfoGameName,False) == False:
+        print(InfoGameName + ' Fail')
+
+    #檢查進入關閉說明按鈕是否存在
+    if checkExits('Info_Close') == False:
+        print('Info_Close Fail')
+
+    #檢查可以入桌的桌號
+    LoopNum = 1
+    DeskNum = 1
+    StartX = 2666
+    StartY = 488
+    XDistance = 117
+    YDistance = 150
+    ColumnItemNum = 5
+    while DeskNum <= 20:
+        DeskNum = DeskNum + 1
+
+
+
+    #檢查是否到遊戲館大廳
+    #if checkExits('CheckInDesk',False) == False:
+    #    print('CheckInDesk Fail')
 
 
     return True
