@@ -26,10 +26,33 @@ import time
 #a1 = "Qq111111"
 #pc.copy(a1)
 #pyautogui.hotkey('ctrl', 'v')
+LoopNum = 0
+DeskNum = 0
+StartX = 2666
+StartY = 488
+FinalLoopStartY = 560
+XDistance = 117
+YDistance = 150
+ColumnItemNum = 5
 
-pyautogui.moveTo(2850,1144,0.5)
-pyautogui.mouseDown(2850,1144)
-pyautogui.moveTo(2850,650,2)
-time.sleep(0.3)
-pyautogui.mouseUp(2850,650)
+while LoopNum < 5:
+    while DeskNum <= 19:
+        ClickX = StartX + (DeskNum % ColumnItemNum) * XDistance
+        if LoopNum == 4:
+            ClickY = FinalLoopStartY + (DeskNum // ColumnItemNum) * YDistance
+        else:
+            ClickY = StartY + (DeskNum // ColumnItemNum) * YDistance
+        pyautogui.moveTo(ClickX,ClickY)
+        pyautogui.click()
+        time.sleep(0.3)
+        DeskNum = DeskNum + 1
+    if LoopNum == 4:
+        break
+    DeskNum = 0        
+    pyautogui.moveTo(2850,1000,0.5)
+    pyautogui.mouseDown(2850,1000)
+    pyautogui.moveTo(2850,413,2)
+    time.sleep(0.3)
+    pyautogui.mouseUp(2850,413)
+    LoopNum = LoopNum + 1
 

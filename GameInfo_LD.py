@@ -120,16 +120,64 @@ def checkGameInfo(GameName):
     if checkExits('Info_Close') == False:
         print('Info_Close Fail')
 
+    #檢查進入說明按鈕是否存在
+    if checkExits('TableDetail',False) == False:
+        print('InfoInDesk Fail')
+
     #檢查可以入桌的桌號
-    LoopNum = 1
-    DeskNum = 1
+    LoopNum = 0
+    DeskNum = 0
     StartX = 2666
     StartY = 488
+    FinalLoopStartY = 560
     XDistance = 117
     YDistance = 150
     ColumnItemNum = 5
-    while DeskNum <= 20:
-        DeskNum = DeskNum + 1
+    bFoundIntoDesk = False
+
+    while LoopNum < 5:
+        while DeskNum <= 19:
+            ClickX = StartX + (DeskNum % ColumnItemNum) * XDistance
+            if LoopNum == 4:
+                ClickY = FinalLoopStartY + (DeskNum // ColumnItemNum) * YDistance
+            else:
+                ClickY = StartY + (DeskNum // ColumnItemNum) * YDistance
+            pyautogui.moveTo(ClickX,ClickY)
+            pyautogui.click()
+            time.sleep(0.3)
+            if checkExits('IntoGame',True,2) == False:
+                print('IntoGame Fail')
+            else:
+                bFoundIntoDesk = True
+                break
+            DeskNum = DeskNum + 1
+        if LoopNum == 4:
+            break
+        if bFoundIntoDesk == True:
+            break
+        DeskNum = 0        
+        pyautogui.moveTo(2850,1000,0.5)
+        pyautogui.mouseDown(2850,1000)
+        pyautogui.moveTo(2850,413,2)
+        time.sleep(0.3)
+        pyautogui.mouseUp(2850,413)
+        LoopNum = LoopNum + 1
+
+    #檢查進入開啟選單按鈕是否存在
+    if checkExits('Trial_MenuMore') == False:
+        print('Trial_MenuMore Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('InfoInDesk') == False:
+        print('InfoInDesk Fail')
+
+    #檢查說明頁面是否正確
+    if checkExits(InfoGameName,False) == False:
+        print(InfoGameName + ' Fail')
+
+    #檢查進入關閉說明按鈕是否存在
+    if checkExits('Info_Close') == False:
+        print('Info_Close Fail')
 
 
 
