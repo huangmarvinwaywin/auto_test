@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False):
     nCheckTimes = 0
     iconAppCheck = False
-    PicNamePath = 'D:/Selenium/auto_test/SwitchGameInfo/' + PicName + '.png'
+    PicNamePath = 'D:/Selenium/auto_test/GameInfo/' + PicName + '.png'
     imgIcon = cv2.imread(PicNamePath)
     print(PicNamePath)
     iconW = imgIcon.shape[1]
@@ -82,7 +82,8 @@ def checkGameInfo(GameName):
     #檢查是否到遊戲館大廳
     if checkExits('Trial_MenuMore',False) == False:
         print('Trial_MenuMore Fail')
-
+    
+    time.sleep(1)
     #檢查 game Icon是否存在
     if checkExits(GameName,True,20,True) == False:
         print(GameName + ' check Fail')
@@ -145,7 +146,7 @@ def checkGameInfo(GameName):
             pyautogui.moveTo(ClickX,ClickY)
             pyautogui.click()
             time.sleep(0.3)
-            if checkExits('IntoGame',True,2) == False:
+            if checkExits('IntoGame',True,1) == False:
                 print('IntoGame Fail')
             else:
                 bFoundIntoDesk = True
@@ -178,6 +179,18 @@ def checkGameInfo(GameName):
     #檢查進入關閉說明按鈕是否存在
     if checkExits('Info_Close') == False:
         print('Info_Close Fail')
+
+    #檢查進入上一頁按鈕是否存在
+    if checkExits('BackToUpLevel') == False:
+        print('BackToUpLevel Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('TableDetail',False) == False:
+        print('InfoInDesk Fail')
+
+    #檢查進入上一頁按鈕是否存在
+    if checkExits('BackToUpLevel') == False:
+        print('BackToUpLevel Fail')
 
 
 
@@ -222,11 +235,56 @@ def main():
     nGameCnt = 0
     checkGameInfo('6001')
 
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6002')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6003')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6004')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6005')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6006')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6008')
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6009')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6010')
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6012')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6013')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6014')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6015')
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6016')
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6017')
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('7001')
+
 
     return
 
 ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
-wb = openpyxl.load_workbook('D:/GoogleDrive/RegressionTest/RT_SwitchGameInfo.xlsx')
+wb = openpyxl.load_workbook('D:/GoogleDrive/RegressionTest/RT_GameInfo.xlsx')
 localtime = time.localtime()
 sheet = wb.create_sheet(str(time.strftime("LD_%y%m%d-%H-%M", localtime)),0)
 nGameCnt = 0

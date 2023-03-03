@@ -1,6 +1,14 @@
 import cv2 as cv
 import numpy as np
+from skimage import metrics
+from PIL import Image
+import imagehash
 
+img1 = Image.open('D:/Selenium/auto_test/GameInfo/6001_Info.png')
+img2 = Image.open('D:/Selenium/auto_test/GameInfo/6001_Info_.png')
+
+#print('ssim = ', ssim)
+"""
 base = cv.imread('D:/Selenium/auto_test/comparePIC/TableDetail.png')
 test = cv.imread('D:/Selenium/auto_test/comparePIC/TableDetailClose.png')
 test2 = cv.imread('D:/Selenium/auto_test/comparePIC/PicToTXT5.png')
@@ -33,3 +41,4 @@ base_test2 = cv.compareHist(hist_base, hist_test2, compare_method)
 print('base_base Similarity = ', base_base)
 print('base_test Similarity = ', base_test)
 print('base_test2 Similarity = ', base_test2)
+"""
