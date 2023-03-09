@@ -7,6 +7,12 @@ import imagehash
 img1 = Image.open('D:/Selenium/auto_test/GameInfo/6001_Info.png')
 img2 = Image.open('D:/Selenium/auto_test/GameInfo/6001_Info_.png')
 
+hash1 = imagehash.average_hash(img1)
+hash2 = imagehash.average_hash(img2)
+if hash1 == hash2:
+    print("hash is the same")
+else:
+    print(("hash is not the same"))
 #print('ssim = ', ssim)
 """
 base = cv.imread('D:/Selenium/auto_test/comparePIC/TableDetail.png')

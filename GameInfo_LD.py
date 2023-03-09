@@ -3,6 +3,7 @@ import pyscreenshot as ImageGrab
 import time
 from PIL import ImageGrab
 from functools import partial
+from PIL import Image
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill       # 載入 Font 和 PatternFill 模組
@@ -11,7 +12,47 @@ import datetime
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import imagehash
+nGameCnt = 0
 
+def checkInfo(PicName, Times = 15):
+    nCheckTimes = 0
+    iconAppCheck = False
+    PicNamePath = 'D:/Selenium/auto_test/GameInfo/' + PicName + '.png'
+    imgIcon = cv2.imread(PicNamePath)
+    print(PicNamePath)
+    iconW = imgIcon.shape[1]
+    iconH = imgIcon.shape[0]
+
+    while iconAppCheck == False:
+        screen = pyautogui.screenshot()
+        screen.save("D:/Selenium/auto_test/PicTemp/ScreenTemp.png")
+        screen = cv2.imread("D:/Selenium/auto_test/PicTemp/ScreenTemp.png")
+        res = cv2.matchTemplate(screen,imgIcon,1)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        #print(min_val, max_val, min_loc, max_loc)
+        top_left = min_loc
+        #print(top_left)
+
+        bottom_right = (top_left[0] + iconW, top_left[1] + iconH)
+        imgscreenIcon = ImageGrab.grab(bbox=(top_left[0], top_left[1], bottom_right[0], bottom_right[1]))
+        #存檔確認比對圖案是否正確,此問題待解，希望可以不要再存檔重新讀取
+        PicIconTempName = "D:/Selenium/auto_test/PicTemp/iconTemp.png"
+        imgscreenIcon.save(PicIconTempName)
+
+        hash1 = imagehash.average_hash(Image.open(PicNamePath))
+        hash2 = imagehash.average_hash(Image.open(PicIconTempName))
+
+        if hash1 == hash2:
+            iconAppCheck = True
+        else:
+            print(nCheckTimes)
+            nCheckTimes = nCheckTimes + 1
+            time.sleep(1)
+            if nCheckTimes >= Times:
+                print('compare over times ' + PicName)
+                return False
+    return True
 
 def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False):
     nCheckTimes = 0
@@ -78,7 +119,7 @@ def checkExits(PicName,bClickIconFound = True, Times = 15, findGameIcon = False)
                 return False
     return True
 
-def checkGameInfo(GameName):
+def checkGameInfo(GameName,WritePos):
     #檢查是否到遊戲館大廳
     if checkExits('Trial_MenuMore',False) == False:
         print('Trial_MenuMore Fail')
@@ -94,8 +135,12 @@ def checkGameInfo(GameName):
 
     #檢查說明頁面是否正確
     InfoGameName = GameName + '_Info'
-    if checkExits(InfoGameName,False) == False:
+    if checkInfo(InfoGameName,10) == False:
+        sheet.cell(WritePos + 2,2).value = "X"
         print(InfoGameName + ' Fail')
+    else:
+        sheet.cell(WritePos + 2,2).value = "OK"
+        print("Found Info")
 
     #檢查進入關閉說明按鈕是否存在
     if checkExits('Info_Close') == False:
@@ -114,8 +159,12 @@ def checkGameInfo(GameName):
         print('InfoInDesk Fail')
 
     #檢查說明頁面是否正確
-    if checkExits(InfoGameName,False) == False:
+    if checkInfo(InfoGameName,10) == False:
+        sheet.cell(WritePos + 2,3).value = "X"
         print(InfoGameName + ' Fail')
+    else:
+        sheet.cell(WritePos + 2,3).value = "OK"
+        print("Found Info")
 
     #檢查進入關閉說明按鈕是否存在
     if checkExits('Info_Close') == False:
@@ -164,6 +213,7 @@ def checkGameInfo(GameName):
         pyautogui.mouseUp(2850,413)
         LoopNum = LoopNum + 1
 
+    time.sleep(2)
     #檢查進入開啟選單按鈕是否存在
     if checkExits('Trial_MenuMore') == False:
         print('Trial_MenuMore Fail')
@@ -173,8 +223,12 @@ def checkGameInfo(GameName):
         print('InfoInDesk Fail')
 
     #檢查說明頁面是否正確
-    if checkExits(InfoGameName,False) == False:
+    if checkInfo(InfoGameName,10) == False:
+        sheet.cell(WritePos + 2,4).value = "X"
         print(InfoGameName + ' Fail')
+    else:
+        sheet.cell(WritePos + 2,4).value = "OK"
+        print("Found Info")
 
     #檢查進入關閉說明按鈕是否存在
     if checkExits('Info_Close') == False:
@@ -192,6 +246,8 @@ def checkGameInfo(GameName):
     if checkExits('BackToUpLevel') == False:
         print('BackToUpLevel Fail')
 
+    sheet.cell(WritePos + 2,1).value = GameName
+    wb.save("D:/GoogleDrive/RegressionTest/RT_GameInfo.xlsx")
 
 
     #檢查是否到遊戲館大廳
@@ -200,8 +256,85 @@ def checkGameInfo(GameName):
 
 
     return True
+
+
+def checkGameInfo_SP(GameName,WritePos):
+    #檢查是否到遊戲館大廳
+    if checkExits('Trial_MenuMore',False) == False:
+        print('Trial_MenuMore Fail')
     
+    time.sleep(1)
+    #檢查 game Icon是否存在
+    if checkExits(GameName,True,20,True) == False:
+        print(GameName + ' check Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('InfoBook') == False:
+        print('InfoBook Fail')
+
+    #檢查說明頁面是否正確
+    InfoGameName = GameName + '_Info'
+    if checkInfo(InfoGameName,10) == False:
+        sheet.cell(WritePos + 2,2).value = "X"
+        print(InfoGameName + ' Fail')
+    else:
+        sheet.cell(WritePos + 2,2).value = "OK"
+        print("Found Info")
+
+    #檢查進入關閉說明按鈕是否存在
+    if checkExits('Info_Close') == False:
+        print('Info_Close Fail')
+
+    #檢查進入遊戲按鈕是否存在
+    if checkExits('Into7001') == False:
+        print('Into7001 Fail')
+
+    sheet.cell(WritePos + 2,3).value = "Other"
+
+    #很奇怪，會判斷錯誤，只好先sleep 5 秒
+    time.sleep(5)
+
+    #檢查進入是否進入遊戲
+    if checkExits('checkInGame',False) == False:
+        print('checkInGame Fail')
+
+    #檢查進入開啟選單按鈕是否存在
+    if checkExits('Trial_MenuMore') == False:
+        print('Trial_MenuMore Fail')
+
+    #檢查進入說明按鈕是否存在
+    if checkExits('InfoInDesk') == False:
+        print('InfoInDesk Fail')
+
+    #檢查說明頁面是否正確
+    if checkInfo(InfoGameName,10) == False:
+        sheet.cell(WritePos + 2,4).value = "X"
+        print(InfoGameName + ' Fail')
+    else:
+        sheet.cell(WritePos + 2,4).value = "OK"
+        print("Found Info")
+
+    #檢查進入關閉說明按鈕是否存在
+    if checkExits('Info_Close') == False:
+        print('Info_Close Fail')
+
+    #檢查進入上一頁按鈕是否存在
+    if checkExits('BackToUpLevel') == False:
+        print('BackToUpLevel Fail')
+
+    sheet.cell(WritePos + 2,1).value = GameName
+    wb.save("D:/GoogleDrive/RegressionTest/RT_GameInfo.xlsx")
+
+    return True
+   
 def main():
+
+    sheet.cell(1,1).value = "Game"
+    sheet.cell(1,2).value = "Lobby"
+    sheet.cell(1,3).value = "Desk"
+    sheet.cell(1,4).value = "Game"
+
+    wb.save("D:/GoogleDrive/RegressionTest/RT_GameInfo.xlsx")
 
     #雷電 L_ForAutoTest
     pyautogui.moveTo(4191,46,0.5)
@@ -233,52 +366,52 @@ def main():
         return
 
     nGameCnt = 0
-    checkGameInfo('6001')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6002')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6003')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6004')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6005')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6006')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6008')
+    checkGameInfo('6001',nGameCnt)
     
     nGameCnt = nGameCnt + 1
-    checkGameInfo('6009')
+    checkGameInfo('6002',nGameCnt)
 
     nGameCnt = nGameCnt + 1
-    checkGameInfo('6010')
+    checkGameInfo('6003',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6004',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6005',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6006',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6008',nGameCnt)
     
     nGameCnt = nGameCnt + 1
-    checkGameInfo('6012')
+    checkGameInfo('6009',nGameCnt)
 
     nGameCnt = nGameCnt + 1
-    checkGameInfo('6013')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6014')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6015')
-
-    nGameCnt = nGameCnt + 1
-    checkGameInfo('6016')
+    checkGameInfo('6010',nGameCnt)
     
     nGameCnt = nGameCnt + 1
-    checkGameInfo('6017')
+    checkGameInfo('6012',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6013',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6014',nGameCnt)
+
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6015',nGameCnt)
     
     nGameCnt = nGameCnt + 1
-    checkGameInfo('7001')
+    checkGameInfo('6016',nGameCnt)
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo('6017',nGameCnt)
+    
+    nGameCnt = nGameCnt + 1
+    checkGameInfo_SP('7001',nGameCnt)
 
 
     return
